@@ -13,9 +13,11 @@ public class EventDTO implements Serializable {
 	
 	private Long id;
 	
-	@NotBlank(message = "Campo requirido")
+	@NotBlank(message = "Campo requerido")
 	private String name;
+
 	private LocalDate date;
+	
 	private String url;
 	
 	@NotNull(message = "Campo requerido")

@@ -22,11 +22,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	@Autowired
 	private JwtTokenStore tokenStore;
 	
-	private static final String[] PUBLIC = { "/oauth/token", "/h2-console/**", "/cities/**", "/events/**" };
+	private static final String[] PUBLIC = { "/oauth/token", "/h2-console/**", };
 	
-	private static final String[] CLIENT_GET = { "/cities/**", "/events/**" };
-	
-	private static final String[] CLIENT_POST = { "/cities/**", "/events/**" };
+	private static final String[] CLIENT_OR_ADMIN = { "/cities/**", "/events/**" };
 	
 	private static final String[] ADMIN = { "/users/**" };	
 	
@@ -46,8 +44,16 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		
 		http.authorizeRequests()
 		.antMatchers(PUBLIC).permitAll()
-		.antMatchers(HttpMethod.GET, CLIENT_GET).hasAnyRole("CLIENT","ADMIN")
-		.antMatchers(HttpMethod.POST, CLIENT_POST).hasAnyRole("CLIENT","ADMIN")
-		.anyRequest().hasAnyRole("ADMIN");
+		.antMatchers(HttpMethod.GET, CLIENT_OR_ADMIN).permitAll()
+		.antMatchers(CLIENT_OR_ADMIN).hasAnyRole("CLIENT", "ADMIN")
+		.antMatchers(ADMIN).hasRole("ADMIN")
+		.anyRequest().authenticated();
+		
+		//http.authorizeRequests()
+		//.antMatchers(PUBLIC).permitAll()
+		//.antMatchers(HttpMethod.GET, CLIENT_GET).hasAnyRole("CLIENT","ADMIN")
+		//.antMatchers(HttpMethod.GET, PUBLIC).hasAnyRole("CLIENT")
+		//.antMatchers(HttpMethod.POST, CLIENT_POST).hasAnyRole("CLIENT","ADMIN")
+		//.anyRequest().hasAnyRole("ADMIN");
 	}	
 }
